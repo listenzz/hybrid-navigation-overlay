@@ -1,0 +1,69 @@
+{
+  "name": "hybrid-navigation-overlay",
+  "description": "Used to implement Toast, Alert, Modal, and other UI infrastructure for React Native with hybrid-navigation",
+  "version": "1.0.0",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "react-native": "src/index",
+  "nativePackage": true,
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "HBDOverlay.podspec",
+    "!android/build",
+    "!ios/build",
+    "!**/__tests__"
+  ],
+  "repository": "https://github.com/listenzz/hybrid-navigation-overlay",
+  "homepage": "https://github.com/listenzz/hybrid-navigation-overlay#readme",
+  "author": "listen <listenzz@163.com> (https://github.com/listenzz)",
+  "license": "MIT",
+  "keywords": [
+    "react-native"
+  ],
+  "scripts": {
+    "build": "rm -rf ./lib && tsc -p tsconfig.build.json",
+    "prepare": "npm run build",
+    "tsc": "tsc",
+    "start": "react-native start --reset-cache",
+    "run:ios": "react-native run-ios --project-path ./example/ios",
+    "start:android": "adb shell am start -n com.reactnative.overlay.example/.MainActivity",
+    "run:android": "cd example/android && ./gradlew installDebug && npm run start:android",
+    "test": "jest",
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
+  },
+  "peerDependencies": {
+    "react": ">=16.8",
+    "react-native": ">=0.60"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/runtime": "^7.13.10",
+    "@gfez/eslint-config-react-native": "^1.0.0",
+    "@types/jest": "^26.0.21",
+    "@types/react": "^17.0.2",
+    "@types/react-native": "^0.67.0",
+    "@types/react-test-renderer": "17.0.2",
+    "babel-jest": "^26.6.3",
+    "hybrid-navigation": "^2.9.0",
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "^0.66.2",
+    "react": "17.0.2",
+    "react-native": "0.67.4",
+    "react-test-renderer": "17.0.2",
+    "typescript": "^4.6.4"
+  },
+  "jest": {
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}
