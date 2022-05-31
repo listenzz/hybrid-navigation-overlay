@@ -1,7 +1,7 @@
 {
   "name": "hybrid-navigation-overlay",
   "description": "Used to implement Toast, Alert, Modal, and other UI infrastructure for React Native with hybrid-navigation",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "react-native": "src/index",
