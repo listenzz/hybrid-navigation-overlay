@@ -3,21 +3,23 @@ import { AppRegistry, BackHandler, StyleSheet, Text, TouchableOpacity, View } fr
 import Toast from './Toast'
 import NativeOverlay from 'hybrid-navigation-overlay'
 
-const overlay = new NativeOverlay('Alert')
+interface OverlayProps {
+  __overlay_key__: number
+}
 
-function Overlay() {
+function Overlay({ __overlay_key__ }: OverlayProps) {
   useEffect(() => {
     const handlePress = () => {
-      overlay.hide()
+      NativeOverlay.hide(__overlay_key__)
       return true
     }
     const subscription = BackHandler.addEventListener('hardwareBackPress', handlePress)
 
     return () => subscription.remove()
-  }, [])
+  }, [__overlay_key__])
 
   function cancel() {
-    overlay.hide()
+    NativeOverlay.hide(__overlay_key__)
   }
 
   function toast() {
@@ -78,14 +80,12 @@ function registerIfNeeded() {
   AppRegistry.registerComponent('Alert', () => Overlay)
 }
 
-function show() {
+function show(title: string, onDismiss: () => void) {
   registerIfNeeded()
-  overlay.show()
+  NativeOverlay.show('Alert')
 }
 
-function hide() {
-  overlay.hide()
-}
+function hide() {}
 
 const Alert = { show, hide }
 

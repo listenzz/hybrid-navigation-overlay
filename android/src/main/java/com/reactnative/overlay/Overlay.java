@@ -33,10 +33,21 @@ public class Overlay {
         this.moduleName = moduleName;
     }
 
-    public void show() {
+    public void update() {
+        ViewGroup decorView = getDecorView();
+        if (decorView != null && decorView != this.decorView) {
+            this.decorView.removeView(reactRootView);
+            this.decorView = decorView;
+            decorView.addView(reactRootView);
+        }
+    }
+
+    public void show(int key) {
         HBDReactRootView reactRootView = createReactRootView();
         this.reactRootView = reactRootView;
-        startReactApplication(reactRootView);
+        Bundle props = new Bundle();
+        props.putInt("__overlay_key__", key);
+        startReactApplication(reactRootView, props);
         decorView = getDecorView();
         if (decorView != null) {
             decorView.addView(reactRootView);
@@ -66,8 +77,7 @@ public class Overlay {
         }
     }
 
-    private void startReactApplication(HBDReactRootView reactRootView) {
-        Bundle props = new Bundle();
+    private void startReactApplication(HBDReactRootView reactRootView, Bundle props) {
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         ReactInstanceManager reactInstanceManager = bridgeManager.getReactInstanceManager();
         reactRootView.startReactApplication(reactInstanceManager, moduleName, props);

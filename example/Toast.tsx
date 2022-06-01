@@ -3,18 +3,21 @@ import { AppRegistry, BackHandler, StyleSheet, Text, View } from 'react-native'
 
 import NativeOverlay from 'hybrid-navigation-overlay'
 
-const overlay = new NativeOverlay('Toast')
+interface OverlayProps {
+  __overlay_key__: number
+}
 
-function Overlay() {
+function Overlay({ __overlay_key__ }: OverlayProps) {
   useEffect(() => {
     const handlePress = () => {
-      overlay.hide()
+      console.log(__overlay_key__)
+      NativeOverlay.hide(__overlay_key__)
       return true
     }
     const subscription = BackHandler.addEventListener('hardwareBackPress', handlePress)
 
     return () => subscription.remove()
-  }, [])
+  }, [__overlay_key__])
 
   return (
     <View style={styles.container}>
@@ -51,12 +54,10 @@ function registerIfNeeded() {
 
 async function show() {
   registerIfNeeded()
-  overlay.show()
+  NativeOverlay.show('Toast')
 }
 
-function hide() {
-  overlay.hide()
-}
+function hide() {}
 
 const Toast = { show, hide }
 

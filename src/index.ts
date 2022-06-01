@@ -2,16 +2,18 @@ import { NativeModules } from 'react-native'
 
 const { HBDOverlay } = NativeModules
 
-export default class NativeOverlay {
-  private _key = -1
+let keyGenerator = 1
 
-  constructor(public moduleName: string) {}
-
-  show() {
-    HBDOverlay.showOverlay(this.moduleName).then((key: number) => (this._key = key))
-  }
-
-  hide() {
-    HBDOverlay.hideOverlay(this._key)
-  }
+function show(moduleName: string) {
+  const key = keyGenerator++
+  HBDOverlay.showOverlay(moduleName, key)
+  return key
 }
+
+function hide(key: number) {
+  HBDOverlay.hideOverlay(key)
+}
+
+const Overlay = { show, hide }
+
+export default Overlay

@@ -5,8 +5,8 @@ import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.LifecycleEventListener;
-import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -17,8 +17,6 @@ public class OverlayModule extends ReactContextBaseJavaModule implements Lifecyc
 
     private final SparseArray<Overlay> overlays = new SparseArray<>();
     private final ReactApplicationContext reactContext;
-
-    private static int keyGenerator = 1;
 
     public OverlayModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -51,19 +49,25 @@ public class OverlayModule extends ReactContextBaseJavaModule implements Lifecyc
     }
 
     @ReactMethod
-    public void showOverlay(final String moduleName, final Promise promise) {
+    public void showOverlay(final String moduleName, final int key) {
         UiThreadUtil.runOnUiThread(() -> {
             final Activity activity = getCurrentActivity();
             if (activity == null || activity.isFinishing()) {
-                promise.resolve(-1);
                 return;
             }
-            int key = keyGenerator++;
-            Overlay overlay = new Overlay((ReactAppCompatActivity) activity, moduleName);
-            overlay.show();
-            overlays.put(key, overlay);
-            promise.resolve(key);
+            Overlay overlay = overlays.get(key);
+            if (overlay != null) {
+                overlay.update();
+                return;
+            }
+            createOverlay(moduleName, key, (ReactAppCompatActivity) activity);
         });
+    }
+
+    private void createOverlay(String moduleName, int key, ReactAppCompatActivity activity) {
+        Overlay overlay = new Overlay(activity, moduleName);
+        overlay.show(key);
+        overlays.put(key, overlay);
     }
 
     @ReactMethod
@@ -89,6 +93,7 @@ public class OverlayModule extends ReactContextBaseJavaModule implements Lifecyc
 
     @Override
     public void onHostDestroy() {
+        FLog.i("OverlayModule", "onHostDestroy");
         handleDestroy();
     }
 }
