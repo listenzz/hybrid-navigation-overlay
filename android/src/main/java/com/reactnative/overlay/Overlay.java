@@ -33,15 +33,6 @@ public class Overlay {
         this.moduleName = moduleName;
     }
 
-    public void update() {
-        ViewGroup decorView = getDecorView();
-        if (decorView != null && decorView != this.decorView) {
-            this.decorView.removeView(reactRootView);
-            this.decorView = decorView;
-            decorView.addView(reactRootView);
-        }
-    }
-
     public void show(int key) {
         HBDReactRootView reactRootView = createReactRootView();
         this.reactRootView = reactRootView;
@@ -61,6 +52,15 @@ public class Overlay {
         }
 
         unmountReactView();
+    }
+
+    public void update() {
+        ViewGroup decorView = getDecorView();
+        if (decorView != null && decorView != this.decorView) {
+            this.decorView.removeView(reactRootView);
+            this.decorView = decorView;
+            decorView.addView(reactRootView);
+        }
     }
 
     private void unmountReactView() {

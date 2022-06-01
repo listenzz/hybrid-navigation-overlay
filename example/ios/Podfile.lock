@@ -11,10 +11,11 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.67.4)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - HBDOverlay (1.0.0):
+  - HBDOverlay (0.0.1):
+    - HybridNavigation
     - React-Core
-  - HybridNavigation (2.9.0):
-    - React
+  - HybridNavigation (2.10.1):
+    - React-Core
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -393,8 +394,8 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 0f4e1f4cfeace095694436e7c7fcc5bf4b03a0ff
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 85ecdd10ee8d8ec362ef519a6a45ff9aa27b2e85
-  HBDOverlay: f0f90d6b3af28af206e2592a976651d321f67d21
-  HybridNavigation: 42c88ca9ec6327f3d097dba29aa414e1d78af704
+  HBDOverlay: 526ba36ffecbee2052f649543a822f0cdc897db8
+  HybridNavigation: 32bf82b9496bebe79b4be7db0843fedffc12745c
   RCT-Folly: 803a9cfd78114b2ec0f140cfa6fa2a6bafb2d685
   RCTRequired: 0aa6c1c27e1d65920df35ceea5341a5fe76bdb79
   RCTTypeSafety: d76a59d00632891e11ed7522dba3fd1a995e573a
