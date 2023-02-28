@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { AppRegistry, BackHandler, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import Toast from './Toast'
+import Toast from '../Toast'
 import NativeOverlay from 'hybrid-navigation-overlay'
 
 interface OverlayProps {
@@ -48,16 +48,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#00000099',
   },
   box: {
-    backgroundColor: '#00000099',
+    backgroundColor: '#FFFFFF',
     padding: 16,
     borderRadius: 8,
     width: 280,
   },
   text: {
     fontSize: 16,
-    color: '#fff',
+    color: '#222',
   },
   buttons: {
     flexDirection: 'row',
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 14,
-    color: '#fff',
+    color: '#222',
   },
 })
 

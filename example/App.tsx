@@ -3,6 +3,7 @@ import { withNavigationItem } from 'hybrid-navigation'
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
 import Toast from './Toast'
 import Alert from './Alert'
+import Floating from './Floating'
 
 function App() {
   function handlePress() {}
@@ -15,20 +16,30 @@ function App() {
     Alert.show()
   }
 
+  function floating() {
+    Floating.show()
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.welcome}>Hello World!</Text>
       <TouchableOpacity onPress={toast} activeOpacity={0.2} style={styles.button}>
-        <Text style={styles.buttonText}>toast</Text>
+        <Text style={styles.buttonText}>Toast</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={alert} activeOpacity={0.2} style={styles.button}>
-        <Text style={styles.buttonText}>alert</Text>
+        <Text style={styles.buttonText}>Alert</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handlePress} activeOpacity={0.2} style={styles.button}>
-        <Text style={styles.buttonText}>notification</Text>
+        <Text style={styles.buttonText}>Notification</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={floating} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>Floating-Menu</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handlePress} activeOpacity={0.2} style={styles.button}>
-        <Text style={styles.buttonText}>all</Text>
+        <Text style={styles.buttonText}>Popover</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handlePress} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>Illustrator</Text>
       </TouchableOpacity>
     </View>
   )

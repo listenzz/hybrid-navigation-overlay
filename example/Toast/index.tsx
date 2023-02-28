@@ -20,7 +20,7 @@ function Overlay({ __overlay_key__ }: OverlayProps) {
   }, [__overlay_key__])
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} pointerEvents="box-none">
       <View style={styles.box}>
         <Text style={styles.text}>Toast</Text>
       </View>
@@ -54,7 +54,7 @@ function registerIfNeeded() {
 
 async function show() {
   registerIfNeeded()
-  NativeOverlay.show('Toast')
+  NativeOverlay.show('Toast', { passThroughTouches: false })
 }
 
 function hide() {}
