@@ -14,6 +14,7 @@ import androidx.annotation.UiThread;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.reactnative.hybridnavigation.HBDReactRootView;
 import com.reactnative.hybridnavigation.ReactAppCompatActivity;
@@ -33,8 +34,13 @@ public class Overlay {
         this.moduleName = moduleName;
     }
 
-    public void show(int key) {
+    public void show(int key, ReadableMap options) {
         HBDReactRootView reactRootView = createReactRootView();
+
+        if (options.hasKey("passThroughTouches")) {
+            reactRootView.setShouldConsumeTouchEvent(!options.getBoolean("passThroughTouches"));
+        }
+
         this.reactRootView = reactRootView;
         Bundle props = new Bundle();
         props.putInt("__overlay_key__", key);

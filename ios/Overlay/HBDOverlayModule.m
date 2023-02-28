@@ -42,16 +42,18 @@
 RCT_EXPORT_MODULE(HBDOverlay)
 
 
-RCT_EXPORT_METHOD(showOverlay:(NSString *)moduleName key:(nonnull NSNumber *)key) {
+RCT_EXPORT_METHOD(show:(NSString *)moduleName key:(nonnull NSNumber *)key options:(NSDictionary *)options) {
     HBDOverlay *overlay = self.overlays[key];
     if (overlay != nil) {
         [overlay update];
         return;
     }
-    [self createOverlayWithModuleName:moduleName key:key];
+    
+    overlay = [self createOverlayWithModuleName:moduleName key:key];
+    [overlay show:options];
 }
 
-RCT_EXPORT_METHOD(hideOverlay:(nonnull NSNumber *)key) {
+RCT_EXPORT_METHOD(hide:(nonnull NSNumber *)key) {
     HBDOverlay *overlay = self.overlays[key];
     if (!overlay) {
         return;
@@ -59,10 +61,10 @@ RCT_EXPORT_METHOD(hideOverlay:(nonnull NSNumber *)key) {
     [overlay hide];
 }
 
-- (void)createOverlayWithModuleName:(NSString *)moduleName key:(NSNumber *)key {
+- (HBDOverlay *)createOverlayWithModuleName:(NSString *)moduleName key:(NSNumber *)key {
     HBDOverlay *overlay = [[HBDOverlay alloc] initWithModuleName:moduleName key:key];
     self.overlays[key] = overlay;
-    [overlay show];
+    return overlay;
 }
 
 

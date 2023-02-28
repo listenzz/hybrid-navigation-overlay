@@ -6,7 +6,7 @@
 @interface HBDOverlay ()
 
 @property(nonatomic, weak) UIWindow *keyWindow;
-@property(nonatomic, strong) HBDRootView *reactRootView;
+@property(nonatomic, strong) HBDRootView *rootView;
 
 @property(nonatomic, copy) NSString *moduleName;
 @property(nonatomic, copy) NSNumber *key;
@@ -23,32 +23,49 @@
     return self;
 }
 
-- (void)show {
-    NSDictionary *props = @{
-        @"__overlay_key__" : self.key
-    };
-    HBDRootView *view = [[HBDRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:self.moduleName initialProperties:props];
+- (void)show:(NSDictionary *)options {
+    BOOL passThroughTouches = [options[@"passThroughTouches"] boolValue];
+    
+    RCTRootView *rctView = [self createReactRootView];
+    rctView.passThroughTouches = passThroughTouches;
+    rctView.frame = [UIScreen mainScreen].bounds;
+
+    HBDRootView *view = [[HBDRootView alloc] initWithRootView:rctView];
     view.frame = [UIScreen mainScreen].bounds;
     view.backgroundColor = [UIColor clearColor];
-    self.reactRootView = view;
+    [view addSubview:rctView];
+    
+    self.rootView = view;
+    
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     [keyWindow addSubview:view];
 }
 
 - (void)hide {
-    if (self.reactRootView) {
-        [self.reactRootView removeFromSuperview];
-        self.reactRootView = nil;
+    if (self.rootView) {
+        [self.rootView removeFromSuperview];
+        self.rootView = nil;
     }
 }
 
 - (void)update {
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     if (keyWindow != self.keyWindow) {
-        [self.reactRootView removeFromSuperview];
-        [keyWindow addSubview:self.reactRootView];
+        [self.rootView removeFromSuperview];
+        [keyWindow addSubview:self.rootView];
         self.keyWindow = keyWindow;
     }
+}
+
+- (RCTRootView *)createReactRootView {
+    NSDictionary *props = @{
+        @"__overlay_key__" : self.key
+    };
+    
+    RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:self.moduleName initialProperties:props];
+    reactView.backgroundColor = UIColor.clearColor;
+
+    return reactView;
 }
 
 @end

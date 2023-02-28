@@ -4,7 +4,7 @@
 
 - (instancetype)initWithModuleName:(NSString *)moduleName key:(NSNumber *)key;
 
-- (void)show;
+- (void)show:(NSDictionary *)options;
 
 - (void)hide;
 

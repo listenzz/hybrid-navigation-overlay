@@ -10,6 +10,7 @@ import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.reactnative.hybridnavigation.ReactAppCompatActivity;
 
@@ -49,7 +50,7 @@ public class OverlayModule extends ReactContextBaseJavaModule implements Lifecyc
     }
 
     @ReactMethod
-    public void showOverlay(final String moduleName, final int key) {
+    public void show(final String moduleName, final int key, final ReadableMap options) {
         UiThreadUtil.runOnUiThread(() -> {
             final Activity activity = getCurrentActivity();
             if (activity == null || activity.isFinishing()) {
@@ -60,18 +61,18 @@ public class OverlayModule extends ReactContextBaseJavaModule implements Lifecyc
                 overlay.update();
                 return;
             }
-            createOverlay(moduleName, key, (ReactAppCompatActivity) activity);
+            createOverlay(moduleName, key, (ReactAppCompatActivity) activity, options);
         });
     }
 
-    private void createOverlay(String moduleName, int key, ReactAppCompatActivity activity) {
+    private void createOverlay(String moduleName, int key, ReactAppCompatActivity activity, final ReadableMap options) {
         Overlay overlay = new Overlay(activity, moduleName);
-        overlay.show(key);
+        overlay.show(key, options);
         overlays.put(key, overlay);
     }
 
     @ReactMethod
-    public void hideOverlay(int key) {
+    public void hide(int key) {
         UiThreadUtil.runOnUiThread(() -> {
             Overlay overlay = overlays.get(key);
             if (overlay == null) {
