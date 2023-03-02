@@ -25,7 +25,7 @@ module.exports = {
     'hybrid-navigation-overlay': {
       platforms: {
         android: {
-          packageInstance: 'new OverlayPackge(this)',
+          packageInstance: 'new OverlayPackage(getReactNativeHost())',
         },
       },
     },
