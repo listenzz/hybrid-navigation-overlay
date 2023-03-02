@@ -102,12 +102,14 @@ function registerIfNeeded() {
   AppRegistry.registerComponent('__overlay_floating__', () => App)
 }
 
-async function show() {
+function show() {
   registerIfNeeded()
   Overlay.show('__overlay_floating__', { passThroughTouches: true })
 }
 
-function hide() {}
+function hide() {
+  Overlay.hide('__overlay_floating__')
+}
 
 const Floating = { show, hide }
 
