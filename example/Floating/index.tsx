@@ -1,28 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { AppRegistry, BackHandler, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
-
-import NativeOverlay from 'hybrid-navigation-overlay'
-import { Ball } from './Ball'
-import Menu from './Menu'
+import { AppRegistry, BackHandler, Pressable, StyleSheet, Text, View } from 'react-native'
+import Overlay from 'hybrid-navigation-overlay'
 import { statusBarHeight } from 'hybrid-navigation'
 
-interface OverlayProps {
-  __overlay_key__: number
-}
+import Ball from './Ball'
+import Menu from './Menu'
 
-function App({ __overlay_key__ }: OverlayProps) {
+const menus = ['菜单1', '菜单2', '菜单3']
+
+function App() {
   useEffect(() => {
     const handlePress = () => {
-      console.log(__overlay_key__)
-      NativeOverlay.hide(__overlay_key__)
+      Overlay.hide('__overlay_floating__')
       return true
     }
     const subscription = BackHandler.addEventListener('hardwareBackPress', handlePress)
 
     return () => subscription.remove()
-  }, [__overlay_key__])
+  }, [])
 
-  const { width: windowWidth } = useWindowDimensions()
   const [menuVisible, setMenuVisible] = useState(false)
 
   const left = useRef(16)
@@ -42,8 +38,28 @@ function App({ __overlay_key__ }: OverlayProps) {
     )
   }
 
+  function renderMenuItem(text: string, collapse: () => void) {
+    return (
+      <Pressable style={styles.item} key={text} onPress={collapse}>
+        <Text style={styles.text}>{text}</Text>
+      </Pressable>
+    )
+  }
+
+  const renderMenuContent = (collapse: () => void) => {
+    return <>{menus.map(text => renderMenuItem(text, collapse))}</>
+  }
+
   if (menuVisible) {
-    return <Menu anchor={anchor} renderAnchor={renderAnchor} onClose={() => setMenuVisible(false)} />
+    return (
+      <Menu
+        anchor={anchor}
+        renderAnchor={renderAnchor}
+        menuHeight={48 * menus.length}
+        renderMenuContent={renderMenuContent}
+        onClose={() => setMenuVisible(false)}
+      />
+    )
   }
 
   return (
@@ -66,6 +82,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  item: {
+    height: 48,
+    justifyContent: 'center',
+    borderBottomColor: '#DDDDDD',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 16,
+  },
+  text: {
+    color: '#222222',
+    fontSize: 17,
+  },
 })
 
 function registerIfNeeded() {
@@ -77,7 +104,7 @@ function registerIfNeeded() {
 
 async function show() {
   registerIfNeeded()
-  NativeOverlay.show('__overlay_floating__', { passThroughTouches: true })
+  Overlay.show('__overlay_floating__', { passThroughTouches: true })
 }
 
 function hide() {}

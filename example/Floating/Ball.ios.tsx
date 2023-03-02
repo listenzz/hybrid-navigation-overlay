@@ -5,7 +5,7 @@ import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-g
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { BallProps } from './types'
 
-export function Ball({ anchor, children, onPress, onPositionChange = () => {} }: PropsWithChildren<BallProps>) {
+export default function Ball({ anchor, children, onPress, onPositionChange = () => {} }: PropsWithChildren<BallProps>) {
   const barHeight = statusBarHeight()
   const { width: windowWidth, height: windowHeight } = useWindowDimensions()
 

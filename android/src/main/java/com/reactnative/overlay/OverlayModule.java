@@ -1,7 +1,6 @@
 package com.reactnative.overlay;
 
 import android.app.Activity;
-import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 
@@ -14,9 +13,11 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
 
+import java.util.HashMap;
+
 public class OverlayModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
-    private final SparseArray<Overlay> overlays = new SparseArray<>();
+    private final HashMap<String, Overlay>  overlays = new HashMap<>();
     private final ReactApplicationContext reactContext;
 
     private final ReactNativeHost reactNativeHost;
@@ -39,11 +40,11 @@ public class OverlayModule extends ReactContextBaseJavaModule implements Lifecyc
     }
 
     private void handleDestroy() {
-        int size = overlays.size();
-        for (int i = 0; i < size; i++) {
-            Overlay overlay = overlays.get(overlays.keyAt(i));
+        for (String key : overlays.keySet()) {
+            Overlay overlay = overlays.get(key);
             overlay.hide();
         }
+        overlays.clear();
     }
 
     @NonNull
@@ -53,34 +54,33 @@ public class OverlayModule extends ReactContextBaseJavaModule implements Lifecyc
     }
 
     @ReactMethod
-    public void show(final String moduleName, final int key, final ReadableMap options) {
+    public void show(final String moduleName, final ReadableMap options) {
         UiThreadUtil.runOnUiThread(() -> {
             final Activity activity = getCurrentActivity();
             if (activity == null || activity.isFinishing()) {
                 return;
             }
-            Overlay overlay = overlays.get(key);
+
+            Overlay overlay = overlays.get(moduleName);
             if (overlay != null) {
                 overlay.update();
                 return;
             }
-            createOverlay(moduleName, key, activity, options);
+
+            overlay = new Overlay(activity, moduleName, reactNativeHost.getReactInstanceManager());
+            overlay.show(options);
+            overlays.put(moduleName, overlay);
         });
     }
 
-    private void createOverlay(String moduleName, int key, Activity activity, final ReadableMap options) {
-        Overlay overlay = new Overlay(activity, moduleName, reactNativeHost.getReactInstanceManager());
-        overlay.show(key, options);
-        overlays.put(key, overlay);
-    }
-
     @ReactMethod
-    public void hide(int key) {
+    public void hide(String moduleName) {
         UiThreadUtil.runOnUiThread(() -> {
-            Overlay overlay = overlays.get(key);
+            Overlay overlay = overlays.get(moduleName);
             if (overlay == null) {
                 return;
             }
+            overlays.remove(moduleName);
             overlay.hide();
         });
     }

@@ -33,7 +33,7 @@ public class Overlay {
         this.reactInstanceManager = reactInstanceManager;
     }
 
-    public void show(int key, ReadableMap options) {
+    public void show(ReadableMap options) {
         OverlayRootView reactRootView = createReactRootView();
 
         if (options.hasKey("passThroughTouches")) {
@@ -42,7 +42,6 @@ public class Overlay {
 
         this.rootView = reactRootView;
         Bundle props = new Bundle();
-        props.putInt("__overlay_key__", key);
         startReactApplication(reactRootView, props);
         decorView = getDecorView();
         if (decorView != null) {
@@ -70,7 +69,6 @@ public class Overlay {
 
     private void unmountReactView() {
         ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
-
         if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
             return;
         }

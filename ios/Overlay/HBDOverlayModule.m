@@ -21,7 +21,7 @@
 }
 
 - (void)handleReload {
-    for (NSNumber *key in self.overlays) {
+    for (NSString *key in self.overlays) {
         HBDOverlay *overlay = self.overlays[key];
         [overlay hide];
     }
@@ -43,30 +43,26 @@
 RCT_EXPORT_MODULE(HBDOverlay)
 
 
-RCT_EXPORT_METHOD(show:(NSString *)moduleName key:(nonnull NSNumber *)key options:(NSDictionary *)options) {
-    HBDOverlay *overlay = self.overlays[key];
+RCT_EXPORT_METHOD(show:(NSString *)moduleName options:(NSDictionary *)options) {
+    HBDOverlay *overlay = self.overlays[moduleName];
     if (overlay != nil) {
         [overlay update];
         return;
     }
     
-    overlay = [self createOverlayWithModuleName:moduleName key:key];
+    overlay = [[HBDOverlay alloc] initWithModuleName:moduleName bridge:self.bridge];
+    self.overlays[moduleName] = overlay;
+    
     [overlay show:options];
 }
 
-RCT_EXPORT_METHOD(hide:(nonnull NSNumber *)key) {
-    HBDOverlay *overlay = self.overlays[key];
+RCT_EXPORT_METHOD(hide:(NSString *)moduleName) {
+    HBDOverlay *overlay = self.overlays[moduleName];
     if (!overlay) {
         return;
     }
+    [self.overlays removeObjectForKey:moduleName];
     [overlay hide];
-}
-
-
-- (HBDOverlay *)createOverlayWithModuleName:(NSString *)moduleName key:(NSNumber *)key {
-    HBDOverlay *overlay = [[HBDOverlay alloc] initWithModuleName:moduleName key:key bridge:self.bridge];
-    self.overlays[key] = overlay;
-    return overlay;
 }
 
 

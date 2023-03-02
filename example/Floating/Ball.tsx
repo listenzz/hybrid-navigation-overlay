@@ -8,7 +8,7 @@ import { BallProps } from './types'
 
 const AnimatedDropShadow = Animated.createAnimatedComponent(DropShadow)
 
-export function Ball({ anchor, children, onPress, onPositionChange = () => {} }: PropsWithChildren<BallProps>) {
+export default function Ball({ anchor, children, onPress, onPositionChange = () => {} }: PropsWithChildren<BallProps>) {
   const barHeight = Platform.OS === 'android' ? statusBarHeight() : 0
   const { width: windowWidth, height: windowHeight } = useWindowDimensions()
 

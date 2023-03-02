@@ -4,7 +4,7 @@
 
 @interface HBDOverlay : NSObject
 
-- (instancetype)initWithModuleName:(NSString *)moduleName key:(NSNumber *)key bridge:(RCTBridge *)bridge;
+- (instancetype)initWithModuleName:(NSString *)moduleName bridge:(RCTBridge *)bridge;
 
 - (void)show:(NSDictionary *)options;
 

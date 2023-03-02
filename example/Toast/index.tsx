@@ -1,23 +1,18 @@
 import React, { useEffect } from 'react'
 import { AppRegistry, BackHandler, StyleSheet, Text, View } from 'react-native'
 
-import NativeOverlay from 'hybrid-navigation-overlay'
+import Overlay from 'hybrid-navigation-overlay'
 
-interface OverlayProps {
-  __overlay_key__: number
-}
-
-function Overlay({ __overlay_key__ }: OverlayProps) {
+function App() {
   useEffect(() => {
     const handlePress = () => {
-      console.log(__overlay_key__)
-      NativeOverlay.hide(__overlay_key__)
+      Overlay.hide('Toast')
       return true
     }
     const subscription = BackHandler.addEventListener('hardwareBackPress', handlePress)
 
     return () => subscription.remove()
-  }, [__overlay_key__])
+  }, [])
 
   return (
     <View style={styles.container} pointerEvents="box-none">
@@ -49,12 +44,12 @@ function registerIfNeeded() {
   if (AppRegistry.getAppKeys().includes('Toast')) {
     return
   }
-  AppRegistry.registerComponent('Toast', () => Overlay)
+  AppRegistry.registerComponent('Toast', () => App)
 }
 
 async function show() {
   registerIfNeeded()
-  NativeOverlay.show('Toast', { passThroughTouches: false })
+  Overlay.show('Toast', { passThroughTouches: false })
 }
 
 function hide() {}

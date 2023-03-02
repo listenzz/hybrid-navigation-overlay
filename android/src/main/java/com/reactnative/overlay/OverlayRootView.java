@@ -15,8 +15,6 @@ import java.lang.reflect.Method;
 
 public class OverlayRootView extends ReactRootView {
 
-    protected static final String TAG = "Navigation";
-
     public OverlayRootView(Context context) {
         super(context);
     }

@@ -6,19 +6,16 @@
 
 @property(nonatomic, weak) UIWindow *keyWindow;
 @property(nonatomic, strong) RCTRootView *rootView;
-
 @property(nonatomic, copy) NSString *moduleName;
-@property(nonatomic, copy) NSNumber *key;
 @property(nonatomic, weak) RCTBridge *bridge;
 
 @end
 
 @implementation HBDOverlay
 
-- (instancetype)initWithModuleName:(NSString *)moduleName key:(NSNumber *)key bridge:(RCTBridge *)bridge {
+- (instancetype)initWithModuleName:(NSString *)moduleName bridge:(RCTBridge *)bridge {
     if (self = [super init]) {
         _moduleName = moduleName;
-        _key = key;
         _bridge = bridge;
     }
     return self;
@@ -54,9 +51,7 @@
 }
 
 - (RCTRootView *)createReactRootView {
-    NSDictionary *props = @{
-        @"__overlay_key__" : self.key
-    };
+    NSDictionary *props = @{ };
     
     RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:self.bridge moduleName:self.moduleName initialProperties:props];
     reactView.backgroundColor = UIColor.clearColor;

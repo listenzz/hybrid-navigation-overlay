@@ -5,22 +5,18 @@ interface OverlayOptions {
 }
 
 interface OverlayInterface extends NativeModule {
-  show(moduleName: string, key: number, options?: OverlayOptions): void
-  hide(key: number): void
+  show(moduleName: string, options?: OverlayOptions): void
+  hide(moduleName: string): void
 }
 
 const HBDOverlay: OverlayInterface = NativeModules.HBDOverlay
 
-let keyGenerator = 1
-
 function show(moduleName: string, options: OverlayOptions = {}) {
-  const key = keyGenerator++
-  HBDOverlay.show(moduleName, key, options)
-  return key
+  HBDOverlay.show(moduleName, options)
 }
 
-function hide(key: number) {
-  HBDOverlay.hide(key)
+function hide(moduleName: string) {
+  HBDOverlay.hide(moduleName)
 }
 
 const Overlay = { show, hide }
