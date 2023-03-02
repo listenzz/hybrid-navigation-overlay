@@ -1,42 +1,33 @@
 import React, { useEffect } from 'react'
-import { ColorValue, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import { Anchor } from './types'
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
 const menus = ['菜单1 菜单1 菜单1', '菜单2', '菜单3']
 
 interface MenuProps {
-  anchorX: number
-  anchorY: number
-  anchorSize: number
-  anchorColor?: ColorValue
+  anchor: Anchor
   renderAnchor?: () => React.ReactNode
   onClose?: () => void
 }
 
-export default function Menu({
-  anchorX,
-  anchorY,
-  anchorSize,
-  anchorColor = 'red',
-  onClose = () => {},
-  renderAnchor,
-}: MenuProps) {
+export default function Menu({ anchor, onClose = () => {}, renderAnchor }: MenuProps) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions()
 
   const menuWidth = Math.max(280, windowWidth - 120)
   const menuHeight = 48 * menus.length
   const menuLeft = (windowWidth - menuWidth) / 2
-  const menuTop = Math.min(anchorY + 16, windowHeight - menuHeight - 16)
+  const menuTop = Math.min(anchor.y + 16, windowHeight - menuHeight - 50)
 
-  const x = useSharedValue(anchorX)
-  const y = useSharedValue(anchorY)
-  const width = useSharedValue(anchorSize)
-  const height = useSharedValue(anchorSize)
+  const x = useSharedValue(anchor.x)
+  const y = useSharedValue(anchor.y)
+  const width = useSharedValue(anchor.size)
+  const height = useSharedValue(anchor.size)
 
   const alpha = useSharedValue(0)
-  const radius = useSharedValue(anchorSize / 2)
+  const radius = useSharedValue(anchor.size / 2)
 
   const maskAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -54,32 +45,27 @@ export default function Menu({
     }
   })
 
-  const menuMaskAnimatedStyle = useAnimatedStyle(() => {
+  const anchorAnimatedStyle = useAnimatedStyle(() => {
     return {
-      backgroundColor: anchorColor,
       opacity: 1 - alpha.value,
     }
   })
 
   // 收起
   const collapse = () => {
-    console.log('collapse')
-
-    x.value = withTiming(anchorX, { duration: 200 })
-    y.value = withTiming(anchorY, { duration: 200 })
-    width.value = withTiming(anchorSize, { duration: 200 })
-    height.value = withTiming(anchorSize, { duration: 200 })
+    x.value = withTiming(anchor.x, { duration: 200 })
+    y.value = withTiming(anchor.y, { duration: 200 })
+    width.value = withTiming(anchor.size, { duration: 200 })
+    height.value = withTiming(anchor.size, { duration: 200 })
 
     alpha.value = withTiming(0, { duration: 200 })
-    radius.value = withTiming(anchorSize / 2, { duration: 200 }, () => {
+    radius.value = withTiming(anchor.size / 2, { duration: 200 }, () => {
       runOnJS(onClose)()
     })
   }
 
   // 展开
   const expand = () => {
-    console.log('expand')
-
     x.value = withTiming(menuLeft, { duration: 200 })
     y.value = withTiming(menuTop, { duration: 200 })
     width.value = withTiming(menuWidth, { duration: 200 })
@@ -115,7 +101,7 @@ export default function Menu({
       <AnimatedPressable style={[styles.mask, maskAnimatedStyle]} onPress={collapse} />
       <Animated.View style={[styles.menu, menuAnimatedStyle]}>
         {menus.map(renderMenuItem)}
-        <Animated.View style={[StyleSheet.absoluteFillObject, menuMaskAnimatedStyle]} pointerEvents="none">
+        <Animated.View style={[StyleSheet.absoluteFillObject, anchorAnimatedStyle]} pointerEvents="none">
           {renderAnchor ? renderAnchor() : renderThumb()}
         </Animated.View>
       </Animated.View>

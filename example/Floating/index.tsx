@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { AppRegistry, BackHandler, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 
 import NativeOverlay from 'hybrid-navigation-overlay'
@@ -23,32 +23,37 @@ function App({ __overlay_key__ }: OverlayProps) {
   }, [__overlay_key__])
 
   const { width: windowWidth } = useWindowDimensions()
+  const [menuVisible, setMenuVisible] = useState(false)
+
+  const left = useRef(16)
+  const top = useRef(statusBarHeight())
+
+  const anchor = {
+    x: left.current,
+    y: top.current,
+    size: 64,
+  }
 
   function renderAnchor() {
     return (
-      <View style={styles.thumb}>
+      <View style={styles.ball}>
         <Text>Menu</Text>
       </View>
     )
   }
 
-  const [menuVisible, setMenuVisible] = useState(false)
-
   if (menuVisible) {
-    return (
-      <Menu
-        anchorX={16}
-        anchorY={statusBarHeight()}
-        anchorSize={80}
-        anchorColor="red"
-        renderAnchor={renderAnchor}
-        onClose={() => setMenuVisible(false)}
-      />
-    )
+    return <Menu anchor={anchor} renderAnchor={renderAnchor} onClose={() => setMenuVisible(false)} />
   }
 
   return (
-    <Ball size={80} style={styles.ball} onPress={() => setMenuVisible(true)}>
+    <Ball
+      anchor={anchor}
+      onPress={() => setMenuVisible(true)}
+      onPositionChange={(x, y) => {
+        left.current = x
+        top.current = y
+      }}>
       {renderAnchor()}
     </Ball>
   )
@@ -56,11 +61,8 @@ function App({ __overlay_key__ }: OverlayProps) {
 
 const styles = StyleSheet.create({
   ball: {
-    backgroundColor: 'red',
-    borderRadius: 40,
-  },
-  thumb: {
     flex: 1,
+    backgroundColor: 'red',
     justifyContent: 'center',
     alignItems: 'center',
   },
