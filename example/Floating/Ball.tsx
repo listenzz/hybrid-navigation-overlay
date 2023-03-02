@@ -1,9 +1,12 @@
 import { statusBarHeight } from 'hybrid-navigation'
 import React, { PropsWithChildren } from 'react'
-import { Platform, useWindowDimensions } from 'react-native'
+import { Platform, StyleSheet, useWindowDimensions } from 'react-native'
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
+import DropShadow from 'react-native-drop-shadow'
 import { BallProps } from './types'
+
+const AnimatedDropShadow = Animated.createAnimatedComponent(DropShadow)
 
 export function Ball({ anchor, children, onPress, onPositionChange = () => {} }: PropsWithChildren<BallProps>) {
   const barHeight = Platform.OS === 'android' ? statusBarHeight() : 0
@@ -60,12 +63,24 @@ export function Ball({ anchor, children, onPress, onPositionChange = () => {} }:
     })
 
   return (
-    <Animated.View style={floatStyles}>
+    <AnimatedDropShadow style={[styles.shadow, floatStyles]}>
       <GestureHandlerRootView>
         <GestureDetector gesture={Gesture.Simultaneous(dragGesture, singleTap)}>
-          <Animated.View style={animatedStyles}>{children}</Animated.View>
+          <Animated.View style={[animatedStyles]}>{children}</Animated.View>
         </GestureDetector>
       </GestureHandlerRootView>
-    </Animated.View>
+    </AnimatedDropShadow>
   )
 }
+
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: '#000',
+    shadowRadius: 8,
+    shadowOpacity: 0.4,
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+  },
+})

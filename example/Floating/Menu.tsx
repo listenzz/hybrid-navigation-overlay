@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react'
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import DropShadow from 'react-native-drop-shadow'
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { Anchor } from './types'
+
+const AnimatedDropShadow = Animated.createAnimatedComponent(DropShadow)
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
@@ -35,13 +38,31 @@ export default function Menu({ anchor, onClose = () => {}, renderAnchor }: MenuP
     }
   })
 
-  const menuAnimatedStyle = useAnimatedStyle(() => {
+  const shadowAnimatedStyle = useAnimatedStyle(() => {
     return {
+      position: 'absolute',
       left: x.value,
       top: y.value,
       width: width.value,
       height: height.value,
       borderRadius: radius.value,
+      shadowColor: '#000',
+      shadowRadius: 8,
+      shadowOpacity: 0.15,
+      shadowOffset: {
+        width: 2,
+        height: 2,
+      },
+    }
+  })
+
+  const contentAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      width: width.value,
+      height: height.value,
+      borderRadius: radius.value,
+      backgroundColor: '#FFFFFF',
+      overflow: 'hidden',
     }
   })
 
@@ -99,12 +120,14 @@ export default function Menu({ anchor, onClose = () => {}, renderAnchor }: MenuP
   return (
     <View style={styles.fill}>
       <AnimatedPressable style={[styles.mask, maskAnimatedStyle]} onPress={collapse} />
-      <Animated.View style={[styles.menu, menuAnimatedStyle]}>
-        {menus.map(renderMenuItem)}
-        <Animated.View style={[StyleSheet.absoluteFillObject, anchorAnimatedStyle]} pointerEvents="none">
-          {renderAnchor ? renderAnchor() : renderThumb()}
+      <AnimatedDropShadow style={shadowAnimatedStyle}>
+        <Animated.View style={contentAnimatedStyle} collapsable={false}>
+          {menus.map(renderMenuItem)}
+          <Animated.View style={[StyleSheet.absoluteFillObject, anchorAnimatedStyle]} pointerEvents="none">
+            {renderAnchor ? renderAnchor() : renderThumb()}
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
+      </AnimatedDropShadow>
     </View>
   )
 }
@@ -113,12 +136,7 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   mask: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-  },
-  menu: {
-    position: 'absolute',
-    backgroundColor: '#FFFFFF',
-    overflow: 'hidden',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
   item: {
     height: 48,

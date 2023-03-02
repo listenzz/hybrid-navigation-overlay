@@ -1,12 +1,13 @@
 #import "HBDOverlay.h"
 
+#import <React/RCTRootView.h>
 #import <HybridNavigation/HybridNavigation.h>
-#import <HybridNavigation/HBDRootView.h>
+
 
 @interface HBDOverlay ()
 
 @property(nonatomic, weak) UIWindow *keyWindow;
-@property(nonatomic, strong) HBDRootView *rootView;
+@property(nonatomic, strong) RCTRootView *rootView;
 
 @property(nonatomic, copy) NSString *moduleName;
 @property(nonatomic, copy) NSNumber *key;
@@ -30,15 +31,11 @@
     rctView.passThroughTouches = passThroughTouches;
     rctView.frame = [UIScreen mainScreen].bounds;
 
-    HBDRootView *view = [[HBDRootView alloc] initWithRootView:rctView];
-    view.frame = [UIScreen mainScreen].bounds;
-    view.backgroundColor = [UIColor clearColor];
-    [view addSubview:rctView];
     
-    self.rootView = view;
+    self.rootView = rctView;
     
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-    [keyWindow addSubview:view];
+    [keyWindow addSubview:rctView];
 }
 
 - (void)hide {

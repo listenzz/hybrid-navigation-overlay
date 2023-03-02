@@ -1,6 +1,6 @@
 import { statusBarHeight } from 'hybrid-navigation'
 import React, { PropsWithChildren } from 'react'
-import { useWindowDimensions } from 'react-native'
+import { StyleSheet, useWindowDimensions } from 'react-native'
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { BallProps } from './types'
@@ -59,7 +59,7 @@ export function Ball({ anchor, children, onPress, onPositionChange = () => {} }:
     })
 
   return (
-    <Animated.View style={floatStyles}>
+    <Animated.View style={[styles.shadow, floatStyles]}>
       <GestureHandlerRootView>
         <GestureDetector gesture={Gesture.Simultaneous(dragGesture, singleTap)}>
           <Animated.View style={animatedStyles}>{children}</Animated.View>
@@ -68,3 +68,15 @@ export function Ball({ anchor, children, onPress, onPositionChange = () => {} }:
     </Animated.View>
   )
 }
+
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: '#000',
+    shadowRadius: 8,
+    shadowOpacity: 0.4,
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+  },
+})
