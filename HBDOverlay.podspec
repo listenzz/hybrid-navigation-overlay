@@ -15,5 +15,4 @@ Pod::Spec.new do |s|
 
   s.source_files = "ios/Overlay/**/*.{h,m,mm}"
   s.dependency "React-Core"
-  s.dependency "HybridNavigation"
 end

@@ -11,16 +11,13 @@
 
 @implementation HBDOverlayModule
 
+@synthesize bridge;
+
 - (instancetype)init {
     if (self = [super init]) {
         _overlays = [[NSMutableDictionary alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload) name:RCTBridgeWillReloadNotification object:nil];
     }
     return self;
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillReloadNotification object:nil];
 }
 
 - (void)handleReload {
@@ -29,6 +26,10 @@
         [overlay hide];
     }
     [self.overlays removeAllObjects];
+}
+
+- (void)invalidate {
+    [self handleReload];
 }
 
 + (BOOL)requiresMainQueueSetup {
@@ -61,8 +62,9 @@ RCT_EXPORT_METHOD(hide:(nonnull NSNumber *)key) {
     [overlay hide];
 }
 
+
 - (HBDOverlay *)createOverlayWithModuleName:(NSString *)moduleName key:(NSNumber *)key {
-    HBDOverlay *overlay = [[HBDOverlay alloc] initWithModuleName:moduleName key:key];
+    HBDOverlay *overlay = [[HBDOverlay alloc] initWithModuleName:moduleName key:key bridge:self.bridge];
     self.overlays[key] = overlay;
     return overlay;
 }

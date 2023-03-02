@@ -1,8 +1,6 @@
 #import "HBDOverlay.h"
 
 #import <React/RCTRootView.h>
-#import <HybridNavigation/HybridNavigation.h>
-
 
 @interface HBDOverlay ()
 
@@ -11,15 +9,17 @@
 
 @property(nonatomic, copy) NSString *moduleName;
 @property(nonatomic, copy) NSNumber *key;
+@property(nonatomic, weak) RCTBridge *bridge;
 
 @end
 
 @implementation HBDOverlay
 
-- (instancetype)initWithModuleName:(NSString *)moduleName key:(NSNumber *)key {
+- (instancetype)initWithModuleName:(NSString *)moduleName key:(NSNumber *)key bridge:(RCTBridge *)bridge {
     if (self = [super init]) {
         _moduleName = moduleName;
         _key = key;
+        _bridge = bridge;
     }
     return self;
 }
@@ -31,7 +31,6 @@
     rctView.passThroughTouches = passThroughTouches;
     rctView.frame = [UIScreen mainScreen].bounds;
 
-    
     self.rootView = rctView;
     
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
@@ -59,7 +58,7 @@
         @"__overlay_key__" : self.key
     };
     
-    RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:self.moduleName initialProperties:props];
+    RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:self.bridge moduleName:self.moduleName initialProperties:props];
     reactView.backgroundColor = UIColor.clearColor;
 
     return reactView;

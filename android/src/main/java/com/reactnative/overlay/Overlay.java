@@ -1,8 +1,8 @@
 package com.reactnative.overlay;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -15,33 +15,32 @@ import androidx.annotation.UiThread;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
-import com.navigation.androidx.AwesomeFragment;
-import com.reactnative.hybridnavigation.HBDReactRootView;
-import com.reactnative.hybridnavigation.ReactAppCompatActivity;
-import com.reactnative.hybridnavigation.ReactBridgeManager;
 
 @UiThread
 public class Overlay {
 
-    final ReactAppCompatActivity activity;
+    final Activity activity;
     final String moduleName;
 
-    HBDReactRootView reactRootView;
+    final ReactInstanceManager reactInstanceManager;
+
+    OverlayRootView rootView;
     ViewGroup decorView;
 
-    public Overlay(@NonNull ReactAppCompatActivity activity, String moduleName) {
+    public Overlay(@NonNull Activity activity, String moduleName, ReactInstanceManager reactInstanceManager) {
         this.activity = activity;
         this.moduleName = moduleName;
+        this.reactInstanceManager = reactInstanceManager;
     }
 
     public void show(int key, ReadableMap options) {
-        HBDReactRootView reactRootView = createReactRootView();
+        OverlayRootView reactRootView = createReactRootView();
 
         if (options.hasKey("passThroughTouches")) {
             reactRootView.setShouldConsumeTouchEvent(!options.getBoolean("passThroughTouches"));
         }
 
-        this.reactRootView = reactRootView;
+        this.rootView = reactRootView;
         Bundle props = new Bundle();
         props.putInt("__overlay_key__", key);
         startReactApplication(reactRootView, props);
@@ -53,7 +52,7 @@ public class Overlay {
 
     public void hide() {
         if (decorView != null) {
-            decorView.removeView(reactRootView);
+            decorView.removeView(rootView);
             decorView = null;
         }
 
@@ -63,59 +62,41 @@ public class Overlay {
     public void update() {
         ViewGroup decorView = getDecorView();
         if (decorView != null && decorView != this.decorView) {
-            this.decorView.removeView(reactRootView);
+            this.decorView.removeView(rootView);
             this.decorView = decorView;
-            decorView.addView(reactRootView);
+            decorView.addView(rootView);
         }
     }
 
     private void unmountReactView() {
-        ReactBridgeManager bridgeManager = getReactBridgeManager();
-        ReactContext reactContext = bridgeManager.getCurrentReactContext();
+        ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
 
         if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
             return;
         }
 
-        if (reactRootView != null) {
-            reactRootView.unmountReactApplication();
-            reactRootView = null;
+        if (rootView != null) {
+            rootView.unmountReactApplication();
+            rootView = null;
         }
     }
 
-    private void startReactApplication(HBDReactRootView reactRootView, Bundle props) {
-        ReactBridgeManager bridgeManager = getReactBridgeManager();
-        ReactInstanceManager reactInstanceManager = bridgeManager.getReactInstanceManager();
+    private void startReactApplication(OverlayRootView reactRootView, Bundle props) {
         reactRootView.startReactApplication(reactInstanceManager, moduleName, props);
     }
 
-    private HBDReactRootView createReactRootView() {
-        HBDReactRootView reactRootView = new HBDReactRootView(activity);
+    private OverlayRootView createReactRootView() {
+        OverlayRootView reactRootView = new OverlayRootView(activity);
         reactRootView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT, Gravity.CENTER));
         return reactRootView;
     }
 
     private ViewGroup getDecorView() {
-        Window window = getWindow();
+        Window window = activity.getWindow();
         if (window == null) {
             return null;
         }
         return (ViewGroup) window.getDecorView();
-    }
-
-    private Window getWindow() {
-        AwesomeFragment fragment = activity.getDialogFragment();
-        if (fragment != null) {
-            return fragment.getWindow();
-        }
-        return activity.getWindow();
-    }
-
-    private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
-
-    @NonNull
-    public ReactBridgeManager getReactBridgeManager() {
-        return bridgeManager;
     }
 
 }
