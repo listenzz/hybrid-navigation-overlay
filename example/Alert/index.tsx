@@ -2,8 +2,10 @@ import React, { useEffect } from 'react'
 import { AppRegistry, BackHandler, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Toast from '../Toast'
 import Overlay from 'hybrid-navigation-overlay'
-
-function App() {
+interface Props {
+  title: string
+}
+function App({ title = 'Alert' }: Props) {
   useEffect(() => {
     const handlePress = () => {
       Overlay.hide('Alert')
@@ -19,13 +21,14 @@ function App() {
   }
 
   function toast() {
-    Toast.show()
+    Toast.show('确定')
+    Overlay.hide('Alert')
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.box}>
-        <Text style={styles.text}>Alert</Text>
+        <Text style={styles.text}>{title}</Text>
         <View style={styles.buttons}>
           <TouchableOpacity onPress={toast} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>确定</Text>
@@ -77,9 +80,9 @@ function registerIfNeeded() {
   AppRegistry.registerComponent('Alert', () => App)
 }
 
-function show(title: string, onDismiss: () => void) {
+function show(title?: string) {
   registerIfNeeded()
-  Overlay.show('Alert')
+  Overlay.show('Alert', { title })
 }
 
 function hide() {}

@@ -43,7 +43,7 @@
 RCT_EXPORT_MODULE(HBDOverlay)
 
 
-RCT_EXPORT_METHOD(show:(NSString *)moduleName options:(NSDictionary *)options) {
+RCT_EXPORT_METHOD(show:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
     HBDOverlay *overlay = self.overlays[moduleName];
     if (overlay != nil) {
         [overlay update];
@@ -53,7 +53,7 @@ RCT_EXPORT_METHOD(show:(NSString *)moduleName options:(NSDictionary *)options) {
     overlay = [[HBDOverlay alloc] initWithModuleName:moduleName bridge:self.bridge];
     self.overlays[moduleName] = overlay;
     
-    [overlay show:options];
+    [overlay show:props options:options];
 }
 
 RCT_EXPORT_METHOD(hide:(NSString *)moduleName) {

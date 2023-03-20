@@ -9,7 +9,7 @@ function App() {
   function handlePress() {}
 
   function toast() {
-    Toast.show()
+    Toast.show(`Toast at ${new Date().toLocaleTimeString()}`)
   }
 
   function alert() {

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 
@@ -33,7 +34,7 @@ public class Overlay {
         this.reactInstanceManager = reactInstanceManager;
     }
 
-    public void show(ReadableMap options) {
+    public void show(ReadableMap props, ReadableMap options) {
         OverlayRootView reactRootView = createReactRootView();
 
         if (options.hasKey("passThroughTouches")) {
@@ -41,8 +42,7 @@ public class Overlay {
         }
 
         this.rootView = reactRootView;
-        Bundle props = new Bundle();
-        startReactApplication(reactRootView, props);
+        startReactApplication(reactRootView, Arguments.toBundle(props));
         decorView = getDecorView();
         if (decorView != null) {
             decorView.addView(reactRootView);

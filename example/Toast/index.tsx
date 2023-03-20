@@ -2,8 +2,10 @@ import React, { useEffect } from 'react'
 import { AppRegistry, BackHandler, StyleSheet, Text, View } from 'react-native'
 
 import Overlay from 'hybrid-navigation-overlay'
-
-function App() {
+interface Props {
+  message?: string
+}
+function App({ message = 'Toast' }: Props) {
   useEffect(() => {
     const handlePress = () => {
       Overlay.hide('Toast')
@@ -17,7 +19,7 @@ function App() {
   return (
     <View style={styles.container} pointerEvents="box-none">
       <View style={styles.box}>
-        <Text style={styles.text}>Toast</Text>
+        <Text style={styles.text}>{message}</Text>
       </View>
     </View>
   )
@@ -47,12 +49,17 @@ function registerIfNeeded() {
   AppRegistry.registerComponent('Toast', () => App)
 }
 
-async function show() {
+async function show(message: string) {
   registerIfNeeded()
-  Overlay.show('Toast', { passThroughTouches: false })
+  Overlay.show<Props>('Toast', { message }, { passThroughTouches: false })
+  setTimeout(() => {
+    hide()
+  }, 3000)
 }
 
-function hide() {}
+function hide() {
+  Overlay.hide('Toast')
+}
 
 const Toast = { show, hide }
 

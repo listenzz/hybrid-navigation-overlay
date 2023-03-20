@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 public class OverlayModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
-    private final HashMap<String, Overlay>  overlays = new HashMap<>();
+    private final HashMap<String, Overlay> overlays = new HashMap<>();
     private final ReactApplicationContext reactContext;
 
     private final ReactNativeHost reactNativeHost;
@@ -54,7 +54,7 @@ public class OverlayModule extends ReactContextBaseJavaModule implements Lifecyc
     }
 
     @ReactMethod
-    public void show(final String moduleName, final ReadableMap options) {
+    public void show(final String moduleName, final ReadableMap props, final ReadableMap options) {
         UiThreadUtil.runOnUiThread(() -> {
             final Activity activity = getCurrentActivity();
             if (activity == null || activity.isFinishing()) {
@@ -68,7 +68,7 @@ public class OverlayModule extends ReactContextBaseJavaModule implements Lifecyc
             }
 
             overlay = new Overlay(activity, moduleName, reactNativeHost.getReactInstanceManager());
-            overlay.show(options);
+            overlay.show(props, options);
             overlays.put(moduleName, overlay);
         });
     }

@@ -21,10 +21,10 @@
     return self;
 }
 
-- (void)show:(NSDictionary *)options {
+- (void)show:(NSDictionary *)props options:(NSDictionary *)options {
     BOOL passThroughTouches = [options[@"passThroughTouches"] boolValue];
     
-    RCTRootView *rctView = [self createReactRootView];
+    RCTRootView *rctView = [self createReactRootView:props];
     rctView.passThroughTouches = passThroughTouches;
     rctView.frame = [UIScreen mainScreen].bounds;
 
@@ -50,9 +50,7 @@
     }
 }
 
-- (RCTRootView *)createReactRootView {
-    NSDictionary *props = @{ };
-    
+- (RCTRootView *)createReactRootView:(NSDictionary *)props {
     RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:self.bridge moduleName:self.moduleName initialProperties:props];
     reactView.backgroundColor = UIColor.clearColor;
 
