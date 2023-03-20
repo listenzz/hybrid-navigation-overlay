@@ -4,15 +4,18 @@ interface OverlayOptions {
   passThroughTouches?: boolean
 }
 
+interface PropsType {
+  [index: string]: any
+}
 interface OverlayInterface extends NativeModule {
-  show(moduleName: string, options?: OverlayOptions): void
+  show<P extends PropsType = {}>(moduleName: string, props?: P, options?: OverlayOptions): void
   hide(moduleName: string): void
 }
 
 const HBDOverlay: OverlayInterface = NativeModules.HBDOverlay
 
-function show(moduleName: string, options: OverlayOptions = {}) {
-  HBDOverlay.show(moduleName, options)
+function show<P extends PropsType = {}>(moduleName: string, props?: P, options: OverlayOptions = {}) {
+  HBDOverlay.show(moduleName, props, options)
 }
 
 function hide(moduleName: string) {

@@ -6,7 +6,7 @@
 
 - (instancetype)initWithModuleName:(NSString *)moduleName bridge:(RCTBridge *)bridge;
 
-- (void)show:(NSDictionary *)options;
+- (void)show:(NSDictionary *)props options:(NSDictionary *)options;
 
 - (void)hide;
 
