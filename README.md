@@ -1,5 +1,7 @@
 # hybrid-navigation-overlay
 
+本库已迁移到 [react-native-troika/overlay](https://github.com/sdcxtech/react-native-troika/blob/master/packages/overlay/README.md)
+
 Native infrastructure for implementing floating UI for React Native.
 
 ## Installation
