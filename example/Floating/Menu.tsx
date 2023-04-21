@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native'
-import DropShadow from 'react-native-drop-shadow'
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import DropShadow from 'react-native-drop-shadow'
+
 import { Anchor } from './types'
 
-const AnimatedDropShadow = Animated.createAnimatedComponent(DropShadow)
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+const AnimatedDropShadow = Animated.createAnimatedComponent(DropShadow)
 
 interface MenuProps {
   anchor: Anchor
@@ -123,7 +124,7 @@ export default function Menu({ anchor, onClose, renderAnchor, renderMenuContent,
     <View style={styles.fill}>
       <AnimatedPressable style={[styles.mask, maskAnimatedStyle]} onPress={collapse} />
       <AnimatedDropShadow style={shadowAnimatedStyle}>
-        <Animated.View style={contentAnimatedStyle} collapsable={false}>
+        <Animated.View style={contentAnimatedStyle}>
           {_renderMenuContent()}
           <Animated.View style={[StyleSheet.absoluteFillObject, anchorAnimatedStyle]} pointerEvents="none">
             {_renderAnchor()}

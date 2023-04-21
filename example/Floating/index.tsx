@@ -1,27 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { AppRegistry, BackHandler, Pressable, StyleSheet, Text, View } from 'react-native'
-import Overlay from 'hybrid-navigation-overlay'
+import React, { useRef, useState } from 'react'
+import { AppRegistry, Pressable, StyleSheet, Text } from 'react-native'
 import { statusBarHeight } from 'hybrid-navigation'
+import Overlay from 'hybrid-navigation-overlay'
 
 import Ball from './Ball'
 import Menu from './Menu'
 
 const menus = ['菜单1', '菜单2', '菜单3']
 
-function App() {
-  useEffect(() => {
-    const handlePress = () => {
-      Overlay.hide('__overlay_floating__')
-      return true
-    }
-    const subscription = BackHandler.addEventListener('hardwareBackPress', handlePress)
-
-    return () => subscription.remove()
-  }, [])
-
+function Hoverball() {
   const [menuVisible, setMenuVisible] = useState(false)
 
-  const left = useRef(16)
+  const left = useRef(8)
   const top = useRef(statusBarHeight())
 
   const anchor = {
@@ -32,9 +22,9 @@ function App() {
 
   function renderAnchor() {
     return (
-      <View style={styles.ball}>
+      <Pressable style={styles.ball} onPress={() => setMenuVisible(true)}>
         <Text>Menu</Text>
-      </View>
+      </Pressable>
     )
   }
 
@@ -65,8 +55,7 @@ function App() {
   return (
     <Ball
       anchor={anchor}
-      onPress={() => setMenuVisible(true)}
-      onPositionChange={(x, y) => {
+      onOffsetChanged={(x, y) => {
         left.current = x
         top.current = y
       }}>
@@ -96,19 +85,19 @@ const styles = StyleSheet.create({
 })
 
 function registerIfNeeded() {
-  if (AppRegistry.getAppKeys().includes('__overlay_floating__')) {
+  if (AppRegistry.getAppKeys().includes('__overlay_hoverball__')) {
     return
   }
-  AppRegistry.registerComponent('__overlay_floating__', () => App)
+  AppRegistry.registerComponent('__overlay_hoverball__', () => Hoverball)
 }
 
 function show() {
   registerIfNeeded()
-  Overlay.show('__overlay_floating__', { passThroughTouches: true })
+  Overlay.show('__overlay_hoverball__', {}, { passThroughTouches: true })
 }
 
 function hide() {
-  Overlay.hide('__overlay_floating__')
+  Overlay.hide('__overlay_hoverball__')
 }
 
 const Floating = { show, hide }
